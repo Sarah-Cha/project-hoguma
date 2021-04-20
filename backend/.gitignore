@@ -3,7 +3,6 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,flask,visualstudiocode
 .vscode/
 venv/
-dataset/
 ### Flask ###
 instance/*
 !instance/.gitignore

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-
 import WordItems from '../../components/Test/WordItems';
+import axios from 'axios';
+import baseUrl from '../../url/http';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,58 +17,112 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
     textAlign: 'center',
     color: theme.palette.text.secondary,
-    border: '2px solid black',
+    border: '4px solid black',
   },
 }));
 
-const WordTestTitle = styled.h1``;
+// 페이지 레이아웃 컨테이너
+const Container = styled.div`
+  display: flex;
+  /* flex-direction: column; */
+  text-align: center;
+  background-color: white;
+  align-items: center; /* 세로에서 가운데에 요소를 배치하겠다 */
+  justify-content: center; /*가로에서 가운데에 요소(자식요소)를 배치하겠다*/
 
-function TestWord(props) {
-  // 문항 10개 고르지 않은 경우, 버튼 활성화 안되도록 해야함
-  // 그러기 위해선, WordItems 컴포넌트에서, 체크된 카운팅 State 필요
-  const [isChecked, setIsChecked] = useState(10);
+  margin-left: 20vw;
+  margin-right: 20vw;
+  padding-top: 5vh;
+  @media (min-width: 768px) and (max-width: 1024px) {
+    padding-top: 10vh;
+  }
+  @media (min-width: 481px) and (max-width: 767px) {
+    padding-top: 10vh;
+  }
+  @media (min-width: 320px) and (max-width: 480px) {
+  }
+`;
+const WordTestTitle = styled.h1`
+  color: black;
+  @media (min-width: 768px) and (max-width: 1024px) {
+    font-size: 2.2vw;
+  }
+  @media (min-width: 481px) and (max-width: 767px) {
+    font-size: 2.2vw;
+  }
+  @media (min-width: 320px) and (max-width: 480px) {
+    font-size: 2vw;
+  }
+`;
+const WordSubmit = styled.h1`
+  color: black;
+  margin: 0 auto;
+  cursor: pointer;
+  @media (min-width: 768px) and (max-width: 1024px) {
+    font-size: 2.2vw;
+  }
+  @media (min-width: 481px) and (max-width: 767px) {
+    font-size: 2.2vw;
+  }
+  @media (min-width: 320px) and (max-width: 480px) {
+    font-size: 2vw;
+  }
+`;
+
+function TestWord() {
   const classes = useStyles();
+  const wordCounter = useSelector((state) => state.test.wordCount);
+  const qNumber = useSelector((state) => state.test.surveyNumber);
+  const history = useHistory();
+  const [words, setWords] = useState([]);
 
+  useEffect(() => {
+    try {
+      axios.get(baseUrl + 'test/word').then((response) => {
+        setWords(response.data.data);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  if (words.length !== 24) return null;
   return (
-    <div>
+    <Container>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <WordTestTitle>
-              다음 중 평소 사용하는 단어와 비슷한 단어를 골라주세요.
+              평소 사용하는 단어와 비슷한 단어 8개를 골라주세요.
             </WordTestTitle>
           </Paper>
         </Grid>
         <Grid item xs={12}>
           <Paper className={classes.paper}>
-            <WordItems />
+            <WordItems words={words} qNumber={qNumber} />
           </Paper>
         </Grid>
         <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            {/* 전체 항목 체크 << 기능을 안한다는 전제, 최대 N개 까지만 체크할 수 있도록 제어하는 부분도 필요할 듯 */}
-            {/* 제출하기 버튼 눌렀을 때, 감정객체의 카운팅 값을 sortring해서, 최상위 키값을 서버에 통신하기로 생각 중 */}
-            {/* 검사 집계 작업필요, 생각해보니 설문조사파트이든,단어선택파트이든, 항목에 내재된 것은, 감정 키값들이니깐 */}
-            {/* 그 감정 키값에 대한 카운트를 하는 객체 state를 리덕스로 관리해서, 마지막 제출시, 전달하면 되지 않을까 생각중 */}
-            {/* 서버에서 반환되는 결과를 받아오기까지, 로딩페이지를 잠시 보여주고, 결과페이지를 보여주는 방식, setTimeout 사용 */}
-            <Button
-              disabled={isChecked !== 10}
-              type="submit"
-              variant="contained"
-              color="primary"
+          <Paper
+            elevation={1}
+            className={classes.paper}
+            style={{ display: wordCounter < 8 && 'none' }}
+          >
+            <WordSubmit
+              style={{ display: wordCounter < 8 && 'none' }}
               onClick={() => {
-                props.setIsStarted(4);
+                history.push('/roading');
                 setTimeout(function () {
-                  props.setIsStarted(5);
+                  history.push('/survey/result');
                 }, 3000);
               }}
             >
               제출하기
-            </Button>
+            </WordSubmit>
           </Paper>
         </Grid>
       </Grid>
-    </div>
+    </Container>
   );
 }
 

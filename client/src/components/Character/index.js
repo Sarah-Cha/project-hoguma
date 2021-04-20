@@ -1,192 +1,124 @@
-import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
-import { PieChart, AreaChart } from '@toast-ui/react-chart';
-import '@toast-ui/chart/dist/toastui-chart.min.css';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import Chip from '@material-ui/core/Chip';
+import { FeelingChart, AmountChart } from './Chart';
+import { feelingChart, amountChart } from '../../actions';
 
-const FeelingChart = () => {
-  const data = {
-    categories: ['Browser'],
-    series: [
-      {
-        name: '행복',
-        data: 5,
-      },
-      {
-        name: '슬픔',
-        data: 2,
-      },
-      {
-        name: '놀람',
-        data: 4,
-      },
-      {
-        name: '화남',
-        data: 7,
-      },
-      {
-        name: '평온',
-        data: 8,
-      },
-      {
-        name: 'Etc',
-        data: 7,
-      },
-    ],
-  };
-
-  const options = {
-    chart: {
-      width: 600,
-      height: 400,
-      format: '1,000',
-    },
-    yAxis: {
-      title: 'Month',
-    },
-    xAxis: {
-      title: 'Amount',
-      min: 0,
-      max: 9000,
-      suffix: '$',
-    },
-    series: {
-      showLabel: true,
-      selectable: true,
-      clockwise: false,
-      dataLabels: {
-        visible: true,
-        anchor: 'outer',
-      },
-    },
-  };
-
-  return (
-    <>
-      <PieChart data={data} options={options} />
-    </>
-  );
-};
-
-const AmountChart = () => {
-  const data = {
-    categories: ['June', 'July', 'Aug', 'Sep', 'Oct', 'Nov'],
-    series: [
-      {
-        name: 'Income',
-        data: [8000, 1000, 7000, 2000, 5000, 3000],
-      },
-    ],
-  };
-
-  const options = {
-    chart: {
-      width: 600,
-      height: 400,
-      // title: 'Monthly Revenue',
-      format: '1,000',
-    },
-    yAxis: {
-      title: 'Month',
-    },
-    xAxis: {
-      title: 'Amount',
-      min: 0,
-      max: 9000,
-      suffix: '$',
-    },
-    series: {
-      showLabel: true,
-    },
-    legend: {
-      visible: false,
-      showCheckbox: false,
-    },
-  };
-
-  return (
-    <>
-      <AreaChart data={data} options={options} />
-    </>
-  );
-};
+import axios from 'axios';
+import baseUrl from '../../url/http';
 
 const Character = () => {
+  const dispatch = useDispatch();
+  const selectedId = useSelector((state) => state.character.id);
+  const [data, setData] = useState([]);
+  const [youtube, setYoutube] = useState('');
+
+  //selectedName 가지고 백엔드에 캐릭터 전체 정보 요청 후 받아오기
+  useEffect(() => {
+    try {
+      axios.get(baseUrl + 'character/' + selectedId).then((response) => {
+        console.log('character-detail', response.data.data);
+        setData(response.data.data);
+        setYoutube(response.data.data.youtube.split('=')[1]);
+        console.log('youtube-key', response.data.data.youtube.split('=')[1]);
+        dispatch(feelingChart(response.data.data.emotion_dict));
+        dispatch(amountChart(response.data.data.stock_arr));
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [selectedId, dispatch]);
+
   return (
     <div
       style={{
-        width: '80vw',
-        height: 'auto',
+        width: '70vw',
         margin: 'auto',
-        background: '#dfe6e9',
+        marginTop: '5vh',
+        padding: '5vw',
+        boxSizing: 'border-box',
+        textAlign: 'left',
+        background: '#fff',
+        color: '#000',
+        alignItems: 'start',
       }}
     >
-      <Grid container spacing={3}>
-        {/* <Grid item xs={12}>
-          <Paper>xs=12</Paper>
-        </Grid> */}
-        <Grid item xs={4} style={{ alignItems: 'center' }}>
-          {/* <Paper elevation={3}> */}
-          <Avatar
-            alt="박해미"
-            src="./images/Hyemi.jpg"
-            style={{ width: '30vh', height: '30vh', margin: 'auto' }}
+      <div
+        container
+        alignItems="flex-start"
+        style={{ alignItems: 'start' }}
+        spacing={3}
+      >
+        <div item xs={12} style={{ textAlign: 'center' }}>
+          <img
+            alt={data.name}
+            src={`images/character/${selectedId}.png`}
+            style={{ width: '40%' }}
           />
-          <h1>박해미</h1>
-          <Paper>
-            <p>
-              나이: 45세 <br /> 직업: 한의사 <br />
-              특징: 윤호, 민호의 엄마
-            </p>
-          </Paper>
-          <Paper>
-            <p>
-              야무지고 똘똘하고 싶어하는 수퍼우먼 컴플렉스를 가진 여자. 자신이
-              능력 있고 존경받는 의사에, 모범적인 결혼생활에 사랑받는 아내며,
-              아들들 잘 키우는 똑 부러지는 엄마며, 귀염 받는 며느리라는 확신에
-              차있고 대외적으로도 그렇게 인정받아야 직성이 풀린다.
-            </p>
-          </Paper>
-          {/* </Paper> */}
-          <div
-            style={{
-              position: 'relative',
-              display: 'block',
-              //   paddingBottom: '56.25%',
-              //   overflow: 'hidden',
-            }}
-          >
-            <iframe
-              width="100%"
-              height="250px"
-              src="https://www.youtube.com/embed/LSkzkePLuCM"
-              title="YouTube video player"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </div>
-        </Grid>
-        <Grid item xs={8}>
-          <div style={{ display: 'block' }}>
-            <h2>사용 단어</h2>
-            <img
-              width="80%"
-              alt="wordcloud-sample"
-              src="https://kr.mathworks.com/help/matlab/ref/wordcloud.png"
-            />
-          </div>
-          <div style={{ display: 'block' }}>
+          <h1>{data.name}</h1>
+          <Chip label={data.age} clickable color="primary" />
+          <Chip label={data.job} clickable color="secondary" />
+          <Chip label={data.qoute} clickable color="default" />
+        </div>
+        <div item xs={6}>
+          <div>
             <h2>주요 감정</h2>
+            <p>기쁨, 슬픔, 분노 감정 분석 결과입니다.</p>
             <FeelingChart />
           </div>
-          <div style={{ display: 'block' }}>
-            <h2>분량 변화</h2>
+        </div>
+        <div item xs={6}>
+          <div>
+            <h2>회차별 분량 변화</h2>
+            <p>한 회차에서 대사량이 가장 많았던 인물은 119회 말했습니다.</p>
             <AmountChart />
           </div>
-        </Grid>
-      </Grid>
+        </div>
+        <div item xs={6} style={{ margin: 'auto' }}>
+          <div style={{ width: '100%' }}>
+            <h2>사용 단어</h2>
+            <p>인물이 가장 많이 사용한 단어의 워드클라우드입니다.</p>
+            <div style={{ textAlign: 'center', margin: 'auto' }}>
+              <img
+                alt={data.name}
+                src={baseUrl + `image/word/${data.word_cloud}`}
+                style={{ width: '80%' }}
+              />
+            </div>
+          </div>
+        </div>
+        <div item xs={6}>
+          <div>
+            <h2>오분순삭</h2>
+            <p>유튜브에서 하이킥을 즐겨보세요!</p>
+            <div
+              style={{
+                overflow: 'hidden',
+                paddingBottom: '56.25%',
+                position: 'relative',
+                height: '0',
+              }}
+            >
+              <iframe
+                style={{
+                  left: '0',
+                  top: '0',
+                  height: '100%',
+                  width: '100%',
+                  position: 'absolute',
+                }}
+                width="600"
+                height="400"
+                src={`https://www.youtube.com/embed/${youtube}`}
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

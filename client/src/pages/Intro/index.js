@@ -12,11 +12,13 @@ import IntroChat from '../../components/Intro/IntroChat';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    margin: '0 20vw',
   },
   paper: {
     padding: theme.spacing(2),
     textAlign: 'center',
     color: theme.palette.text.secondary,
+    border: '3px solid black',
   },
 }));
 

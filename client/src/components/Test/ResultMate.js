@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import baseUrl from '../../url/http';
 
 const MiddleSectorContainer = styled.div`
   overflow: hidden;
@@ -13,25 +14,52 @@ const MiddlesectorEmotionContainer = styled.div`
   display: block;
   margin: 0 2vw;
 `;
-const MiddleSectorTitle = styled.h1``;
-const MiddleMateSectorImage = styled.img``;
-const MiddleMateSectorName = styled.p``;
-
-// 변해야할 것들 : 캐릭터 이미지주소, 캐릭터설명,캐릭터이름
-
-function ResultMate() {
+const MiddleSectorTitle = styled.h1`
+  color: black;
+  @media (min-width: 768px) and (max-width: 1024px) {
+    font-size: 3.5vw;
+  }
+  @media (min-width: 481px) and (max-width: 767px) {
+    font-size: 3.5vw;
+  }
+  @media (min-width: 320px) and (max-width: 480px) {
+    font-size: 3.5vw;
+  }
+`;
+const MiddleMateSectorImage = styled.img`
+  width: 20vw;
+  @media (min-width: 768px) and (max-width: 1024px) {
+    width: 20vw;
+  }
+  @media (min-width: 481px) and (max-width: 767px) {
+    width: 20vw;
+  }
+  @media (min-width: 320px) and (max-width: 480px) {
+    width: 20vw;
+  }
+`;
+const MiddleMateSectorName = styled.p`
+  color: black;
+`;
+function ResultMate(props) {
   return (
     <>
       <MiddleSectorContainer>
         <MiddlesectorEmotionContainer>
           <MiddleSectorTitle>찰떡 궁합</MiddleSectorTitle>
-          <MiddleMateSectorImage src="/images/Hyemi.jpg" alt={'박혜미'} />
-          <MiddleMateSectorName>{'박혜미'}</MiddleMateSectorName>
+          <MiddleMateSectorImage
+            src={`${baseUrl}/image/result/${props.pair[0]}`}
+            alt={''}
+          />
+          <MiddleMateSectorName>{''}</MiddleMateSectorName>
         </MiddlesectorEmotionContainer>
         <MiddlesectorEmotionContainer>
           <MiddleSectorTitle>극혐 조합</MiddleSectorTitle>
-          <MiddleMateSectorImage src="/images/Soonjae.jpg" alt={'이순재'} />
-          <MiddleMateSectorName>{'이순재'}</MiddleMateSectorName>
+          <MiddleMateSectorImage
+            src={`${baseUrl}/image/result/${props.pair[1]}`}
+            alt={''}
+          />
+          <MiddleMateSectorName>{''}</MiddleMateSectorName>
         </MiddlesectorEmotionContainer>
       </MiddleSectorContainer>
     </>
