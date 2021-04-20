@@ -25,9 +25,6 @@ function App() {
       <Switch>
         <Route exact path="/" component={Home} />
         <Route path="/about" component={About} />
-
-        {/* ========= */}
-
         <Route exact path="/survey" component={TestMain} />
         <Route exact path="/survey/process" component={TestSurvey} />
         <Route exact path="/survey/word" component={TestWord} />
@@ -36,8 +33,6 @@ function App() {
         <Route exact path="/overdose/process" component={TestOverdose} />
         <Route exact path="/overdose/result" component={TestOverdoseResult} />
         <Route exact path="/roading" component={TestRoading} />
-
-        {/* ========= */}
         <Route exact path="/game" component={GameMain} />
         <Route exact path="/game/result" component={GameResult} />
         <Route exact path="/game/all" component={GameAll} />
