@@ -44,7 +44,6 @@ class Game(Resource):
                 .filter(Gacha.id == random.randrange(1, 21))
                 .all()
             )
-            print(game_set)
             for game in game_set:
                 game_id = game.id
                 nickname = game.nickname
