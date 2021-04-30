@@ -18,26 +18,28 @@ export default function SimpleBottomNavigation() {
     <BottomNavigation
       value={value}
       onChange={(event, newValue) => {
-        setValue(event.target.key);
-        console.log(value);
+        setValue(newValue);
       }}
       showLabels
     >
       <BottomNavigationAction
         key={0}
         label="홈"
+        value="home"
         onClick={() => dispatch(home(0))}
         icon={<AiOutlineHome />}
       />
       <BottomNavigationAction
         key={1}
         label="게임"
+        value="game"
         onClick={() => dispatch(home(1))}
         icon={<IoGameControllerOutline />}
       />
       <BottomNavigationAction
         key={2}
         label="캐릭터"
+        value="character"
         onClick={() => dispatch(home(2))}
         icon={<BsFillPersonCheckFill />}
       />
@@ -45,6 +47,7 @@ export default function SimpleBottomNavigation() {
       <BottomNavigationAction
         key={3}
         label="고사"
+        value="test"
         onClick={() => dispatch(home(3))}
         icon={<BsCardChecklist />}
       />
@@ -52,6 +55,7 @@ export default function SimpleBottomNavigation() {
       <BottomNavigationAction
         key={4}
         label="관계도"
+        value="connection"
         onClick={() => dispatch(home(4))}
         icon={<GiOrganigram />}
       />
