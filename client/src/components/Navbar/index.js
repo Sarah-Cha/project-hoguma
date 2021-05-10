@@ -5,6 +5,7 @@ import {
   testSurveyNumber,
   testEmotionCount,
   testWordCount,
+  testCheckedWord,
 } from '../../actions';
 import styled from 'styled-components';
 import { NavLink as Link } from 'react-router-dom';
@@ -26,6 +27,7 @@ const Navbar = () => {
             dispatch(testWordCount(0));
             dispatch(testSurveyNumber(0));
             dispatch(testEmotionCount({ 기쁨: 0, 슬픔: 0, 분노: 0 }));
+            dispatch(testCheckedWord([]));
           }}
         >
           나와 닮은 캐릭터
@@ -38,6 +40,7 @@ const Navbar = () => {
             dispatch(testWordCount(0));
             dispatch(testSurveyNumber(0));
             dispatch(testEmotionCount({ 기쁨: 0, 슬픔: 0, 분노: 0 }));
+            dispatch(testCheckedWord([]));
           }}
         >
           하이킥 고사

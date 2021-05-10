@@ -72,6 +72,13 @@ export const testSurveyNumber = (number) => {
   };
 };
 
+export const testCheckedWord = (info) => {
+  return {
+    type: 'TEST_CHECKED_WORD',
+    info,
+  };
+};
+
 export const testWordCount = (number) => {
   return {
     type: 'TEST_WORD_COUNT',

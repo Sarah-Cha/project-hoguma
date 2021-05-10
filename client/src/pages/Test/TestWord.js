@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { testWordCount, testCheckedWord } from '../../actions';
 import styled from 'styled-components';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -8,6 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import WordItems from '../../components/Test/WordItems';
 import axios from 'axios';
 import baseUrl from '../../url/http';
+import { Chip } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
     border: '4px solid black',
+  },
+  chip: {
+    margin: theme.spacing(0.5),
   },
 }));
 
@@ -68,28 +73,50 @@ const WordSubmit = styled.h1`
     font-size: 2vw;
   }
 `;
+const CheckedChips = styled.li`
+  display: inline-block;
+  text-decoration: none;
+`;
 
 function TestWord() {
   const classes = useStyles();
   const wordCounter = useSelector((state) => state.test.wordCount);
   const qNumber = useSelector((state) => state.test.surveyNumber);
+  const dispatch = useDispatch();
   const history = useHistory();
   const [words, setWords] = useState([]);
+  const chipData = useSelector((state) => state.test.checkedWord);
 
   useEffect(() => {
     try {
       axios.get(baseUrl + 'test/word').then((response) => {
+        console.log(response.data.data);
         setWords(response.data.data);
       });
+      // axios.get('http://localhost:3000/data/testWord.json').then((response) => {
+      //   console.log(response.data.data);
+      //   setWords(response.data.data);
+      // });
     } catch (error) {
       console.log(error);
     }
   }, []);
 
+  const handleDelete = (deleteChipKey) => () => {
+    dispatch(testWordCount(wordCounter - 1));
+    var newChipData = [];
+    for (var i = 0; i < chipData.length; i++) {
+      if (chipData[i][0].toString() !== deleteChipKey) {
+        newChipData.push(chipData[i]);
+      }
+    }
+    dispatch(testCheckedWord(newChipData));
+  };
+
   if (words.length !== 24) return null;
   return (
     <Container>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <WordTestTitle>
@@ -97,6 +124,24 @@ function TestWord() {
             </WordTestTitle>
           </Paper>
         </Grid>
+        {Array.isArray(chipData) && chipData.length !== 0 && (
+          <Grid item xs={12}>
+            <Paper component="ul" className={classes.paper}>
+              {chipData.map((data) => {
+                return (
+                  <CheckedChips key={data[0].toString()}>
+                    <Chip
+                      label={data[2]}
+                      onDelete={handleDelete(data[0].toString())}
+                      className={classes.chip}
+                      color="primary"
+                    />
+                  </CheckedChips>
+                );
+              })}
+            </Paper>
+          </Grid>
+        )}
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <WordItems words={words} qNumber={qNumber} />
