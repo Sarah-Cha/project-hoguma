@@ -97,6 +97,7 @@
 ## 6. 버전
 
 - Ver1.0 : [링크이동](http://elice-kdt-ai-track-vm-da-02.koreacentral.cloudapp.azure.com)
+- Ver1.1 : [링크이동]()
 
 ## 7. FAQ
 
